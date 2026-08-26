@@ -1,26 +1,143 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------ */
+/* Design tokens                                                       */
+/* ------------------------------------------------------------------ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* dark (hero / photo section) */
+  --color-dark: #0b0d12;
+  --color-dark-surface: #12151d;
+  --color-dark-line: #22262f;
+
+  /* light (all other sections) */
+  --color-light: #f2f3f6;
+  --color-light-surface: #ffffff;
+  --color-light-line: #e2e4e9;
+
+  /* ink */
+  --color-ink: #12141a;
+  --color-ink-muted: #5b6270;
+  --color-paper: #f5f6f8;
+  --color-paper-muted: #8a93a6;
+
+  /* accent glow */
+  --color-blue: #3e7bfa;
+  --color-blue-glow: #6fa0ff;
+  --color-orange: #ff7a3d;
+  --color-orange-glow: #ffab6f;
+
+  --font-display: var(--font-sora);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-jbmono);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-dark: var(--color-dark);
+  --color-dark-surface: var(--color-dark-surface);
+  --color-dark-line: var(--color-dark-line);
+  --color-light: var(--color-light);
+  --color-light-surface: var(--color-light-surface);
+  --color-light-line: var(--color-light-line);
+  --color-ink: var(--color-ink);
+  --color-ink-muted: var(--color-ink-muted);
+  --color-paper: var(--color-paper);
+  --color-paper-muted: var(--color-paper-muted);
+  --color-blue: var(--color-blue);
+  --color-blue-glow: var(--color-blue-glow);
+  --color-orange: var(--color-orange);
+  --color-orange-glow: var(--color-orange-glow);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ------------------------------------------------------------------ */
+/* Base                                                                 */
+/* ------------------------------------------------------------------ */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-light);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-blue);
+  color: #fff;
+}
+
+/* utility: eyebrow / mono label */
+.label-mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+/* utility: reveal-on-scroll target (GSAP toggles opacity/transform) */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* thin gradient beam used at the dark -> light seam */
+.seam-beam {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-blue) 20%,
+    var(--color-paper) 50%,
+    var(--color-orange) 80%,
+    transparent 100%
+  );
+  opacity: 0.55;
+}
+
+/* custom scrollbar, subtle */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-light);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-light-line);
+  border-radius: 999px;
+}
+
+/* typing cursor */
+.typing-cursor::after {
+  content: "|";
+  display: inline-block;
+  margin-left: 2px;
+  margin-top: 10px;
+  color: var(--color-orange-glow);
+  animation: blink-cursor 0.9s step-end infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }

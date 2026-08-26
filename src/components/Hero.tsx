@@ -310,7 +310,7 @@ export default function Hero() {
             "
           >
             <Image
-              src="/images/zulfikar.png"
+              src="/images/ZULFIKAR.png"
               alt="Zulfikar Ajie"
               fill
               priority

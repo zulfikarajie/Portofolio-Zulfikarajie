@@ -35,7 +35,13 @@ function scrambleTo(el: HTMLElement, finalText: string, duration = 0.9) {
   });
 }
 
-export default function Hero() {
+export default function Hero({
+  introReady = true,
+  onNavigate,
+}: {
+  introReady?: boolean;
+  onNavigate?: (index: number) => void;
+}) {
   const root = useRef<HTMLDivElement>(null);
 
   const line1Ref = useRef<HTMLSpanElement>(null);
@@ -46,6 +52,7 @@ export default function Hero() {
   const enRef = useRef<HTMLParagraphElement>(null);
 
   useLayoutEffect(() => {
+    if (!introReady) return;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
@@ -78,15 +85,6 @@ export default function Hero() {
             },
           },
           "+=0.05"
-        )
-        .from(
-          ".hero-sub",
-          {
-            y: 16,
-            opacity: 0,
-            duration: 0.6,
-          },
-          "-=0.2"
         )
         .from(
           ".hero-cta",
@@ -141,13 +139,13 @@ export default function Hero() {
     }, root);
 
     return () => ctx.revert();
-  }, []);
+  }, [introReady]);
 
   return (
     <section
       id="hero"
       ref={root}
-      className="relative min-h-screen w-full overflow-hidden bg-dark text-paper flex items-center"
+      className="relative h-auto min-h-[100svh] w-full overflow-visible bg-dark text-paper flex items-center lg:h-full lg:overflow-hidden"
     >
       {/* Ambient lighting — canvas-based flowing glow */}
       <LightingBackground />
@@ -155,13 +153,14 @@ export default function Hero() {
       <div
         className="
           relative mx-auto w-full max-w-7xl
-          px-6 sm:px-8 lg:px-10
-          pt-28 pb-12
+          px-5 sm:px-8 lg:px-10
+          pt-24 pb-10
+          lg:py-0 lg:pt-[72px] lg:h-full lg:max-h-full
           grid
           grid-cols-1
           lg:grid-cols-[1.05fr_0.95fr]
           xl:grid-cols-[1fr_1fr]
-          gap-8 lg:gap-4 xl:gap-8
+          gap-6 lg:gap-4 xl:gap-8
           items-center
         "
       >
@@ -176,11 +175,11 @@ export default function Hero() {
               font-display font-semibold
               leading-[0.95]
               tracking-tight
-              text-[15vw]
-              sm:text-[11vw]
-              md:text-[5.5rem]
-              lg:text-[4.5rem]
-              xl:text-[5.5rem]
+              text-[clamp(2.25rem,12vw,3rem)]
+              sm:text-[clamp(3rem,11vw,4.5rem)]
+              md:text-[4.5rem]
+              lg:text-[4.25rem]
+              xl:text-[5.25rem]
             "
           >
             <span className="block">
@@ -195,17 +194,27 @@ export default function Hero() {
             </span>
           </h1>
 
-          {/* CTA */}
-          <div className="mt-15 md:mt-20 flex flex-wrap items-center gap-3 md:gap-4">
+          {/* CTA — fluid size via clamp(), scales with viewport like the name */}
+          <div className="mt-6 md:mt-10 lg:mt-8 flex flex-row flex-wrap items-center gap-[clamp(0.5rem,2vw,1rem)]">
             <a
-              href="https://github.com/zulfikarajie?tab=repositories"
+              href="#projects"
+              onClick={(e) => {
+                if (onNavigate) {
+                  e.preventDefault();
+                  onNavigate(2);
+                }
+              }}
               className="
                 hero-cta
-                inline-flex items-center gap-2
+                inline-flex items-center justify-center
+                gap-[clamp(0.375rem,1.5vw,0.5rem)]
                 rounded-full
                 bg-paper text-dark
-                px-5 md:px-6 py-3
-                font-medium text-sm
+                px-[clamp(0.9rem,4vw,1.25rem)]
+                py-[clamp(0.6rem,2.4vw,0.75rem)]
+                font-medium
+                text-[clamp(0.7rem,3.4vw,0.875rem)]
+                whitespace-nowrap
                 hover:bg-orange-glow
                 transition-colors
               "
@@ -216,13 +225,23 @@ export default function Hero() {
 
             <a
               href="#contact"
+              onClick={(e) => {
+                if (onNavigate) {
+                  e.preventDefault();
+                  onNavigate(3);
+                }
+              }}
               className="
                 hero-cta
-                inline-flex items-center gap-2
+                inline-flex items-center justify-center
+                gap-[clamp(0.375rem,1.5vw,0.5rem)]
                 rounded-full
                 border border-paper/25
-                px-5 md:px-6 py-3
-                font-medium text-sm
+                px-[clamp(0.9rem,4vw,1.25rem)]
+                py-[clamp(0.6rem,2.4vw,0.75rem)]
+                font-medium
+                text-[clamp(0.7rem,3.4vw,0.875rem)]
+                whitespace-nowrap
                 hover:border-orange-glow 
                 hover:text-orange-glow
                 transition-colors
@@ -235,14 +254,12 @@ export default function Hero() {
           {/* ================= STACK ================= */}
           <div
             className="
-              mt-5 md:mt-8
-              grid grid-cols-2 sm:grid-cols-3
-              gap-x-6 gap-y-6
+              mt-6 md:mt-8 lg:mt-6
               label-mono text-paper-muted
               max-w-xl
             "
           >
-            <div className="mt-5 md:mt-8 flex gap-8 md:gap-10 label-mono text-paper-muted">
+            <div className="flex gap-8 md:gap-10 label-mono text-paper-muted">
               <div className="hero-stat">
                 <p
                   ref={techNumRef}
@@ -283,12 +300,11 @@ export default function Hero() {
             relative
             z-0
             w-full
-            h-[520px]
-            sm:h-[580px]
-            md:h-[620px]
-            lg:h-[calc(100vh-120px)]
-            lg:min-h-[600px]
-            xl:min-h-[680px]
+            h-[clamp(220px,62vw,340px)]
+            sm:h-[clamp(360px,58vw,520px)]
+            md:h-[480px]
+            lg:h-[min(calc(100svh-170px),600px)]
+            lg:min-h-[400px]
             flex
             items-end
             justify-center
@@ -298,29 +314,20 @@ export default function Hero() {
           <div
             className="
               relative
-              w-[360px]
-              h-[520px]
-              sm:w-[430px]
-              sm:h-[580px]
-              md:w-[500px]
-              md:h-[620px]
-              lg:w-[520px]
-              lg:h-full
-              xl:w-[600px]
+              h-full
+              w-[clamp(200px,60vw,280px)]
+              sm:w-[340px]
+              md:w-[400px]
+              lg:w-[clamp(360px,36vw,520px)]
+              xl:w-[clamp(420px,38vw,560px)]
             "
           >
             <Image
-              src="/images/ZULFIKAR.png"
+              src="/images/ZULFIKAR1.png"
               alt="Zulfikar Ajie"
               fill
               priority
-              sizes="
-                (max-width: 640px) 360px,
-                (max-width: 768px) 430px,
-                (max-width: 1024px) 500px,
-                (max-width: 1280px) 520px,
-                600px
-              "
+              sizes="(max-width: 640px) 70vw, (max-width: 768px) 340px, (max-width: 1024px) 400px, (max-width: 1280px) 36vw, 38vw"
               className="object-contain object-bottom"
               style={{
                 maskImage:
@@ -333,8 +340,8 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Transition beam */}
-      <div className="absolute bottom-0 left-0 right-0 seam-beam" />
+      {/* Transition beam — desktop only; on mobile it cuts across the photo */}
+      <div aria-hidden className="absolute bottom-0 left-0 right-0 hidden lg:block seam-beam" />
     </section>
   );
 }
